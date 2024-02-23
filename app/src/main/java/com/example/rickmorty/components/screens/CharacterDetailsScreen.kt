@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,6 +30,7 @@ import com.example.rickmorty.components.character.CharacterDetailsNameComponent
 import com.example.rickmorty.components.character.CharacterImageComponent
 import com.example.rickmorty.components.shared.CharacterDataComponent
 import com.example.rickmorty.components.shared.DataCharacter
+import com.example.rickmorty.components.shared.LoadingState
 import com.example.rickmorty.network.KtorClient
 import com.example.rickmorty.network.domain.Character
 import com.example.rickmorty.ui.theme.Action
@@ -38,7 +38,8 @@ import com.example.rickmorty.ui.theme.Action
 @Composable
 fun CharacterDetailsScreen(
     ktorClient: KtorClient,
-    characterId: Int
+    characterId: Int,
+    onEpisodeClicked: (Int) -> Unit
 ) {
     var character by remember {
         mutableStateOf<Character?>(null)
@@ -55,7 +56,7 @@ fun CharacterDetailsScreen(
                         add(DataCharacter(title = "Type", description = type))
                     }
                     add(DataCharacter(title = "Origin", description = character.origin.name))
-                    add(DataCharacter(title = "Episode count", description = character.episodeUrls.size.toString()))
+                    add(DataCharacter(title = "Episode count", description = character.episodeIds.size.toString()))
                 }
             }
         }
@@ -129,7 +130,9 @@ fun CharacterDetailsScreen(
                         shape = RoundedCornerShape(12.dp)
                     )
                     .clip(RoundedCornerShape(12.dp))
-                    .clickable {}
+                    .clickable {
+                        onEpisodeClicked(characterId)
+                    }
                     .padding(vertical = 8.dp)
                     .fillMaxWidth()
             )
@@ -137,14 +140,4 @@ fun CharacterDetailsScreen(
 
         item { Spacer(modifier = Modifier.height(64.dp)) }
     }
-}
-
-@Composable
-private fun LoadingState() {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(all = 128.dp),
-        color = Action
-    )
 }

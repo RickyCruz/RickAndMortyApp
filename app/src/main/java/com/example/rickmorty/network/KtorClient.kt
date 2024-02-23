@@ -1,8 +1,11 @@
 package com.example.rickmorty.network
 
 import com.example.rickmorty.network.domain.Character
+import com.example.rickmorty.network.domain.Episode
 import com.example.rickmorty.network.remote.RemoteCharacter
+import com.example.rickmorty.network.remote.RemoteEpisode
 import com.example.rickmorty.network.remote.toDomainCharacter
+import com.example.rickmorty.network.remote.toDomainEpisode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -42,6 +45,15 @@ class KtorClient {
         }
     }
 
+    suspend fun getEpisodes(episodeIds: List<Int>): ApiOperation<List<Episode>> {
+        val ids = episodeIds.joinToString(separator = ",")
+
+        return safeApiCall {
+            client.get("episode/$ids")
+                .body<List<RemoteEpisode>>()
+                .map { it.toDomainEpisode() }
+        }
+    }
 
     private inline fun <T> safeApiCall(apiCall: () -> T): ApiOperation<T> {
         return try {
