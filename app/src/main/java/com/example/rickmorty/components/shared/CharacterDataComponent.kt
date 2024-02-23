@@ -15,7 +15,7 @@ data class DataCharacter(
 )
 
 @Composable
-fun DataComponent(data: DataCharacter) {
+fun CharacterDataComponent(data: DataCharacter) {
     Column {
         Text(
             text = data.title,
@@ -33,7 +33,7 @@ fun DataComponent(data: DataCharacter) {
 
 @Preview
 @Composable
-fun DataPointComponentPreview() {
+fun CharacterDataComponentPreview() {
     val data = DataCharacter(title = "Last known location", description = "Citadel of Ricks")
-    DataComponent(data = data)
+    CharacterDataComponent(data = data)
 }

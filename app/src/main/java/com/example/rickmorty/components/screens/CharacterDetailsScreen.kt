@@ -4,7 +4,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,10 +27,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.SubcomposeAsyncImage
 import com.example.rickmorty.components.character.CharacterDetailsNameComponent
+import com.example.rickmorty.components.character.CharacterImageComponent
+import com.example.rickmorty.components.shared.CharacterDataComponent
 import com.example.rickmorty.components.shared.DataCharacter
-import com.example.rickmorty.components.shared.DataComponent
 import com.example.rickmorty.network.KtorClient
 import com.example.rickmorty.network.domain.Character
 import com.example.rickmorty.ui.theme.Action
@@ -105,20 +104,12 @@ fun CharacterDetailsScreen(
         item { Spacer(modifier = Modifier.height(8.dp)) }
 
         item {
-            SubcomposeAsyncImage(
-                model = character?.imageUrl.orEmpty(),
-                contentDescription = "Character image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(12.dp)),
-                loading = { LoadingState() }
-            )
+            CharacterImageComponent(character?.imageUrl.orEmpty())
         }
 
         items(characterData) {
             Spacer(modifier = Modifier.height(32.dp))
-            DataComponent(data = it)
+            CharacterDataComponent(data = it)
         }
 
         item { Spacer(modifier = Modifier.height(32.dp)) }
