@@ -1,5 +1,6 @@
 package com.example.rickmorty.components.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,133 +12,122 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rickmorty.components.character.CharacterDetailsNameComponent
 import com.example.rickmorty.components.character.CharacterImageComponent
 import com.example.rickmorty.components.shared.CharacterDataComponent
 import com.example.rickmorty.components.shared.DataCharacter
 import com.example.rickmorty.components.shared.LoadingState
-import com.example.rickmorty.network.KtorClient
 import com.example.rickmorty.network.domain.Character
 import com.example.rickmorty.ui.theme.Action
+import com.example.rickmorty.viewmodels.CharacterDetailsViewModel
+import kotlinx.coroutines.launch
+
+sealed interface CharacterDetailsViewState {
+    data object Loading : CharacterDetailsViewState
+    data class Error(val message: String) : CharacterDetailsViewState
+    data class Success(val character: Character, val characterData: List<DataCharacter>) :
+        CharacterDetailsViewState
+}
 
 @Composable
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun CharacterDetailsScreen(
-    ktorClient: KtorClient,
     characterId: Int,
-    onEpisodeClicked: (Int) -> Unit
+    viewModel: CharacterDetailsViewModel = hiltViewModel(),
+    onEpisodeClicked: (Int) -> Unit,
 ) {
-    var character by remember {
-        mutableStateOf<Character?>(null)
-    }
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.fetchCharacter(characterId)
+    })
 
-    val characterData: List<DataCharacter> by remember {
-        derivedStateOf {
-            buildList {
-                character?.let { character ->
-                    add(DataCharacter(title = "Last known location", description = character.location.name))
-                    add(DataCharacter(title = "Species", description = character.species))
-                    add(DataCharacter(title = "Gender", description = character.gender.displayName))
-                    character.type.takeIf { it.isNotEmpty() }?.let { type ->
-                        add(DataCharacter(title = "Type", description = type))
+    val scope = rememberCoroutineScope()
+    val snackHostState = remember { SnackbarHostState() }
+    val state by viewModel.stateFlow.collectAsState()
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackHostState)
+        }
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(all = 16.dp)
+        ) {
+            when (val viewState = state) {
+                is CharacterDetailsViewState.Loading -> item { LoadingState() }
+
+                is CharacterDetailsViewState.Error -> {
+                    scope.launch {
+                        snackHostState.showSnackbar(
+                            message = viewState.message,
+                            duration = SnackbarDuration.Indefinite
+                        )
                     }
-                    add(DataCharacter(title = "Origin", description = character.origin.name))
-                    add(DataCharacter(title = "Episode count", description = character.episodeIds.size.toString()))
+                }
+
+                is CharacterDetailsViewState.Success -> {
+                    item {
+                        CharacterDetailsNameComponent(
+                            name = viewState.character.name,
+                            status = viewState.character.status
+                        )
+                    }
+
+                    item { Spacer(modifier = Modifier.height(8.dp)) }
+
+                    item {
+                        CharacterImageComponent(imageUrl = viewState.character.imageUrl)
+                    }
+
+                    items(viewState.characterData) {
+                        Spacer(modifier = Modifier.height(32.dp))
+                        CharacterDataComponent(data = it)
+                    }
+
+                    item { Spacer(modifier = Modifier.height(32.dp)) }
+
+                    item {
+                        Text(
+                            text = "View all episodes",
+                            color = Action,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(horizontal = 32.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Action,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .clip(RoundedCornerShape(12.dp))
+                                .clickable {
+                                    onEpisodeClicked(characterId)
+                                }
+                                .padding(vertical = 8.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+
+                    item { Spacer(modifier = Modifier.height(64.dp)) }
                 }
             }
         }
-    }
-
-    var hasError by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = Unit, block = {
-        ktorClient.getCharacter(characterId).onSuccess {
-            character = it
-        }.onFailure {
-            hasError = true
-        }
-    })
-
-    if (hasError) {
-        AlertDialog(
-            onDismissRequest = { hasError = false },
-            title = { Text("Whoops!") },
-            text = { Text("Something were wrong") },
-            confirmButton = {},
-            dismissButton = {
-                TextButton(onClick = { hasError = false }) {
-                    Text("Ok".uppercase())
-                }
-            },
-        )
-    }
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(all = 16.dp)
-    ) {
-        if (character == null) {
-            item { LoadingState() }
-            return@LazyColumn
-        }
-
-        item {
-            CharacterDetailsNameComponent(
-                name = character?.name.orEmpty(),
-                status = character!!.status
-            )
-        }
-
-        item { Spacer(modifier = Modifier.height(8.dp)) }
-
-        item {
-            CharacterImageComponent(character?.imageUrl.orEmpty())
-        }
-
-        items(characterData) {
-            Spacer(modifier = Modifier.height(32.dp))
-            CharacterDataComponent(data = it)
-        }
-
-        item { Spacer(modifier = Modifier.height(32.dp)) }
-
-        // Button
-        item {
-            Text(
-                text = "View all episodes",
-                color = Action,
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Action,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable {
-                        onEpisodeClicked(characterId)
-                    }
-                    .padding(vertical = 8.dp)
-                    .fillMaxWidth()
-            )
-        }
-
-        item { Spacer(modifier = Modifier.height(64.dp)) }
     }
 }

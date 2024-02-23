@@ -1,5 +1,6 @@
 package com.example.rickmorty.components.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,68 +13,73 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rickmorty.components.character.CharacterImageComponent
 import com.example.rickmorty.components.episode.EpisodeRowComponent
 import com.example.rickmorty.components.shared.CharacterNameComponent
 import com.example.rickmorty.components.shared.LoadingState
-import com.example.rickmorty.network.KtorClient
 import com.example.rickmorty.network.domain.Character
 import com.example.rickmorty.network.domain.Episode
 import com.example.rickmorty.ui.theme.Primary
 import com.example.rickmorty.ui.theme.TextPrimary
-import kotlinx.coroutines.launch
+import com.example.rickmorty.viewmodels.EpisodesViewModel
+
+sealed interface CharacterEpisodesViewState {
+    data object Loading : CharacterEpisodesViewState
+    data class Error(val message: String) : CharacterEpisodesViewState
+    data class Success(val character: Character, val episodes: List<Episode> = emptyList()) :
+        CharacterEpisodesViewState
+}
 
 @Composable
-fun CharacterEpisodeScreen(characterId: Int, ktorClient: KtorClient) {
-    var characterState by remember { mutableStateOf<Character?>(null) }
-    var episodesState by remember { mutableStateOf<List<Episode>>(emptyList()) }
-    var hasError by remember { mutableStateOf(false) }
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+fun CharacterEpisodeScreen(
+    characterId: Int,
+    viewModel: EpisodesViewModel = hiltViewModel(),
+) {
     LaunchedEffect(key1 = Unit, block = {
-        ktorClient.getCharacter(characterId).onSuccess { character ->
-            characterState = character
-            launch {
-                ktorClient.getEpisodes(character.episodeIds).onSuccess { episodes ->
-                    episodesState = episodes
-                }.onFailure {
-                    hasError = true
-                }
-            }
-        }.onFailure {
-            hasError = true
-        }
+        viewModel.fetchEpisodes(characterId)
     })
 
-    if (hasError) {
-        AlertDialog(
-            onDismissRequest = { hasError = false },
-            title = { Text("Whoops!") },
-            text = { Text("Something were wrong") },
-            confirmButton = {},
-            dismissButton = {
-                TextButton(onClick = { hasError = false }) {
-                    Text("Ok".uppercase())
-                }
-            },
-        )
-    }
+    val snackHostState = remember { SnackbarHostState() }
+    val state by viewModel.stateFlow.collectAsState()
 
-    characterState?.let { character ->
-        MainScreen(character = character, episodes = episodesState)
-    } ?: LoadingState()
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackHostState)
+        }
+    ) {
+        when (val viewState = state) {
+            is CharacterEpisodesViewState.Loading -> LoadingState()
+
+            is CharacterEpisodesViewState.Error -> {
+                LaunchedEffect(key1 = Unit, block = {
+                    snackHostState.showSnackbar(
+                        message = viewState.message,
+                        duration = SnackbarDuration.Indefinite
+                    )
+                })
+            }
+
+            is CharacterEpisodesViewState.Success -> {
+                MainScreen(character = viewState.character, episodes = viewState.episodes)
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
