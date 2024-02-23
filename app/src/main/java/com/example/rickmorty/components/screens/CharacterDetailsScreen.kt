@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -60,9 +62,29 @@ fun CharacterDetailsScreen(
         }
     }
 
+    var hasError by remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = Unit, block = {
-        character = ktorClient.getCharacter(characterId)
+        ktorClient.getCharacter(characterId).onSuccess {
+            character = it
+        }.onFailure {
+            hasError = true
+        }
     })
+
+    if (hasError) {
+        AlertDialog(
+            onDismissRequest = { hasError = false },
+            title = { Text("Whoops!") },
+            text = { Text("Something were wrong") },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { hasError = false }) {
+                    Text("Ok".uppercase())
+                }
+            },
+        )
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
