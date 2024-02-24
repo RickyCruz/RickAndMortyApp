@@ -7,8 +7,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.example.rickmorty.R
 import com.example.rickmorty.components.shared.LoadingState
 
 private val defaultModifier = Modifier
@@ -23,7 +25,7 @@ fun CharacterImageComponent(
 ) {
     SubcomposeAsyncImage(
         model = imageUrl,
-        contentDescription = "Character image",
+        contentDescription = stringResource(R.string.image_content_description),
         modifier = modifier,
         loading = { LoadingState() }
     )

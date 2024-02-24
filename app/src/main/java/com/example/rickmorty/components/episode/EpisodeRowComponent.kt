@@ -10,10 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.rickmorty.R
 import com.example.rickmorty.components.shared.CharacterDataComponent
 import com.example.rickmorty.components.shared.DataCharacter
 import com.example.rickmorty.network.domain.Episode
@@ -23,7 +25,7 @@ fun EpisodeRowComponent(episode: Episode) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         CharacterDataComponent(
             data = DataCharacter(
-                title = "Episode",
+                title = stringResource(R.string.screen_character_episode_label),
                 description = episode.episodeNumber.toString()
             )
         )

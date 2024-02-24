@@ -31,9 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.rickmorty.R
 import com.example.rickmorty.components.character.CharacterImageComponent
 import com.example.rickmorty.components.episode.EpisodeRowComponent
 import com.example.rickmorty.components.shared.CharacterNameComponent
@@ -131,7 +133,7 @@ private fun SeasonHeader(seasonNumber: Int) {
     ) {
         Row {
             Text(
-                text = "Season $seasonNumber",
+                text = stringResource(R.string.screen_character_episode_header, seasonNumber),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center,

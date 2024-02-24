@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Rick and Morty</string>
+
+    <string name="screen_characters_title">Rick And Morty Characters</string>
+    <string name="screen_characters_action_prev">Previous</string>
+    <string name="screen_characters_action_next">Next</string>
+    <string name="screen_character_detail_action_view_all">View all episodes</string>
+    <string name="screen_character_detail_last_known_location">Last known location</string>
+    <string name="screen_character_detail_species">Species</string>
+    <string name="screen_character_detail_gender">Species</string>
+    <string name="screen_character_detail_type">Species</string>
+    <string name="screen_character_detail_origin">Origin</string>
+    <string name="screen_character_detail_episode_count">Episode count</string>
+    <string name="screen_character_episode_header">Season %s</string>
+    <string name="screen_character_episode_label">Episode</string>
+    <string name="image_content_description">Character image</string>
+    <string name="unknown_error">Unknown error occurred</string>
 </resources>

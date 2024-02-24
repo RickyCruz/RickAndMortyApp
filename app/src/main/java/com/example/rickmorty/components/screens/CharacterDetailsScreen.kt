@@ -26,9 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.rickmorty.R
 import com.example.rickmorty.components.character.CharacterDetailsNameComponent
 import com.example.rickmorty.components.character.CharacterImageComponent
 import com.example.rickmorty.components.shared.CharacterDataComponent
@@ -104,7 +106,7 @@ fun CharacterDetailsScreen(
 
                     item {
                         Text(
-                            text = "View all episodes",
+                            text = stringResource(R.string.screen_character_detail_action_view_all),
                             color = MaterialTheme.colorScheme.primary,
                             textAlign = TextAlign.Center,
                             modifier = Modifier

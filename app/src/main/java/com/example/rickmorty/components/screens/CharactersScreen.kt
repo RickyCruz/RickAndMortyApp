@@ -26,9 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.rickmorty.R
 import com.example.rickmorty.components.character.CharacterItemComponent
 import com.example.rickmorty.components.shared.FullScreenLoading
 import com.example.rickmorty.network.domain.Character
@@ -123,7 +125,7 @@ fun CharactersTopBar(modifier: Modifier = Modifier) {
     TopAppBar(
         title = {
             Text(
-                text = "Rick And Morty Characters",
+                text = stringResource(R.string.screen_characters_title),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = modifier
@@ -158,7 +160,7 @@ fun CharactersBottomBar(
                     .weight(1f)
                     .height(48.dp)
             ) {
-                Text(text = "Previous")
+                Text(text = stringResource(R.string.screen_characters_action_prev))
             }
             TextButton(
                 onClick = onNextPress,
@@ -167,7 +169,7 @@ fun CharactersBottomBar(
                     .weight(1f)
                     .height(48.dp)
             ) {
-                Text(text = "Next")
+                Text(text = stringResource(R.string.screen_characters_action_next))
             }
         }
     }

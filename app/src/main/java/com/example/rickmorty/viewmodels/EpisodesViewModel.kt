@@ -2,7 +2,9 @@ package com.example.rickmorty.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rickmorty.R
 import com.example.rickmorty.components.screens.CharacterEpisodesViewState
+import com.example.rickmorty.di.StringResourcesProvider
 import com.example.rickmorty.repositories.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EpisodesViewModel @Inject constructor(
-    private val characterRepository: CharacterRepository
+    private val stringResources: StringResourcesProvider,
+    private val characterRepository: CharacterRepository,
 ) : ViewModel() {
     private val _stateFlow = MutableStateFlow<CharacterEpisodesViewState>(
         value = CharacterEpisodesViewState.Loading
@@ -37,7 +40,7 @@ class EpisodesViewModel @Inject constructor(
                 }.onFailure { exception ->
                     _stateFlow.update {
                         return@update CharacterEpisodesViewState.Error(
-                            message = exception.message ?: "Unknown error occurred"
+                            message = exception.message ?: stringResources.getString(R.string.unknown_error),
                         )
                     }
                 }
@@ -45,7 +48,7 @@ class EpisodesViewModel @Inject constructor(
         }.onFailure { exception ->
             _stateFlow.update {
                 return@update CharacterEpisodesViewState.Error(
-                    message = exception.message ?: "Unknown error occurred"
+                    message = exception.message ?: stringResources.getString(R.string.unknown_error),
                 )
             }
         }
