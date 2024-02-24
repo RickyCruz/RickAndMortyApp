@@ -6,9 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rickmorty.components.screens.CharacterDetailsScreen
-import com.example.rickmorty.components.screens.CharacterEpisodeScreen
-import com.example.rickmorty.components.screens.CharactersScreen
+import com.example.rickmorty.ui.screens.CharacterDetailsScreen
+import com.example.rickmorty.ui.screens.CharacterEpisodeScreen
+import com.example.rickmorty.ui.screens.CharactersScreen
 
 @Composable
 fun RickAndMortyNavigation() {

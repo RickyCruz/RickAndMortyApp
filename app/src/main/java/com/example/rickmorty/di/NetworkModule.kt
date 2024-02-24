@@ -1,6 +1,6 @@
 package com.example.rickmorty.di
 
-import com.example.rickmorty.network.KtorClient
+import com.example.rickmorty.data.remote.KtorClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
