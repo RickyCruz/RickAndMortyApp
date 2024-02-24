@@ -1,7 +1,6 @@
 package com.example.rickmorty.components.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rickmorty.components.character.CharacterItemComponent
+import com.example.rickmorty.components.shared.FullScreenLoading
 import com.example.rickmorty.network.domain.Character
 import com.example.rickmorty.viewmodels.CharactersViewModel
 
@@ -98,7 +98,6 @@ fun CharactersScreen(
     ) { innerPadding ->
         Surface(
             modifier = Modifier.padding(innerPadding),
-            //color = MaterialTheme.colors.surface
         ) {
             LazyColumn(contentPadding = PaddingValues(vertical = 6.dp),
                 modifier = Modifier.fillMaxSize(),
@@ -126,6 +125,7 @@ fun CharactersTopBar(modifier: Modifier = Modifier) {
             Text(
                 text = "Rick And Morty Characters",
                 textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
@@ -170,16 +170,5 @@ fun CharactersBottomBar(
                 Text(text = "Next")
             }
         }
-    }
-}
-
-@Composable
-private fun FullScreenLoading() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
-    ) {
-        CircularProgressIndicator()
     }
 }

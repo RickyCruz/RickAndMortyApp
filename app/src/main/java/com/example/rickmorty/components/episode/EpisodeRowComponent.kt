@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,11 +14,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.rickmorty.components.shared.CharacterDataComponent
 import com.example.rickmorty.components.shared.DataCharacter
 import com.example.rickmorty.network.domain.Episode
-import com.example.rickmorty.ui.theme.TextPrimary
 
 @Composable
 fun EpisodeRowComponent(episode: Episode) {
@@ -32,15 +31,14 @@ fun EpisodeRowComponent(episode: Episode) {
         Column {
             Text(
                 text = episode.name,
-                fontSize = 24.sp,
-                color = TextPrimary,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.End,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = episode.airDate,
-                fontSize = 16.sp,
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.tertiary,
                 fontStyle = FontStyle.Italic,
                 textAlign = TextAlign.End,
                 modifier = Modifier.fillMaxWidth()

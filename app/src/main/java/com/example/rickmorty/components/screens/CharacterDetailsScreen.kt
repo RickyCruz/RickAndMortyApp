@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -27,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rickmorty.components.character.CharacterDetailsNameComponent
 import com.example.rickmorty.components.character.CharacterImageComponent
@@ -35,7 +35,6 @@ import com.example.rickmorty.components.shared.CharacterDataComponent
 import com.example.rickmorty.components.shared.DataCharacter
 import com.example.rickmorty.components.shared.LoadingState
 import com.example.rickmorty.network.domain.Character
-import com.example.rickmorty.ui.theme.Action
 import com.example.rickmorty.viewmodels.CharacterDetailsViewModel
 import kotlinx.coroutines.launch
 
@@ -90,30 +89,29 @@ fun CharacterDetailsScreen(
                         )
                     }
 
-                    item { Spacer(modifier = Modifier.height(8.dp)) }
+                    item { Spacer(modifier = Modifier.height(12.dp)) }
 
                     item {
                         CharacterImageComponent(imageUrl = viewState.character.imageUrl)
                     }
 
                     items(viewState.characterData) {
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         CharacterDataComponent(data = it)
                     }
 
-                    item { Spacer(modifier = Modifier.height(32.dp)) }
+                    item { Spacer(modifier = Modifier.height(24.dp)) }
 
                     item {
                         Text(
                             text = "View all episodes",
-                            color = Action,
-                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.primary,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .padding(horizontal = 32.dp)
                                 .border(
                                     width = 1.dp,
-                                    color = Action,
+                                    color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(12.dp)
                                 )
                                 .clip(RoundedCornerShape(12.dp))

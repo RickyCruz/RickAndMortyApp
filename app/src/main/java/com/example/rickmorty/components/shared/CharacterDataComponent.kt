@@ -1,13 +1,12 @@
 package com.example.rickmorty.components.shared
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.example.rickmorty.ui.theme.Action
-import com.example.rickmorty.ui.theme.TextPrimary
 
 data class DataCharacter(
     val title: String,
@@ -19,14 +18,12 @@ fun CharacterDataComponent(data: DataCharacter) {
     Column {
         Text(
             text = data.title,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = Action
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             text = data.description,
-            fontSize = 24.sp,
-            color = TextPrimary
+            color = MaterialTheme.colorScheme.tertiary
         )
     }
 }

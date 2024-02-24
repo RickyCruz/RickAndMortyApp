@@ -13,13 +13,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.rickmorty.network.domain.Character
 
 @Composable
@@ -52,6 +52,7 @@ fun CharacterItemComponent(
             ) {
                 Text(
                     text = item.name,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             }
             Divider(modifier = Modifier.padding(top = 1.dp))

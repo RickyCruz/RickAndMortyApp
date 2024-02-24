@@ -1,5 +1,6 @@
 package com.example.rickmorty.components.character
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +17,10 @@ private val defaultModifier = Modifier
     .clip(RoundedCornerShape(12.dp))
 
 @Composable
-fun CharacterImageComponent(imageUrl: String, modifier: Modifier = defaultModifier) {
+fun CharacterImageComponent(
+    imageUrl: String,
+    @SuppressLint("ModifierParameter") modifier: Modifier = defaultModifier
+) {
     SubcomposeAsyncImage(
         model = imageUrl,
         contentDescription = "Character image",
