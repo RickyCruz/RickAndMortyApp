@@ -8,5 +8,5 @@ import com.example.rickmorty.domain.model.Episode
 interface RickAndMortyRepository {
     suspend fun fetchCharacters(page: Int): Resource<Characters>
     suspend fun fetchCharacter(characterId: Int): Resource<Character>
-    suspend fun fetchEpisodes(episodeIds: List<Int>): Resource<List<Episode>>
+    suspend fun fetchEpisodes(episodeIds: List<Int>, characterId: Int): Resource<List<Episode>>
 }

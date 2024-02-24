@@ -32,7 +32,7 @@ class EpisodesViewModel @Inject constructor(
                 return@update CharacterEpisodesViewState.Success(character = character)
             }
             launch {
-                getEpisodesByIdUseCase(character.episodeIds).onSuccess { episodes ->
+                getEpisodesByIdUseCase(character.episodeIds, characterId).onSuccess { episodes ->
                     _stateFlow.update {
                         return@update CharacterEpisodesViewState.Success(
                             character = character,

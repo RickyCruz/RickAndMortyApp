@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetEpisodesByIdUseCase @Inject constructor(
     private val repository: RickAndMortyRepository
 ) {
-    suspend operator fun invoke(episodeIds: List<Int>): Resource<List<Episode>> {
-        return repository.fetchEpisodes(episodeIds = episodeIds)
+    suspend operator fun invoke(episodeIds: List<Int>, characterId: Int): Resource<List<Episode>> {
+        return repository.fetchEpisodes(episodeIds = episodeIds, characterId = characterId)
     }
 }
