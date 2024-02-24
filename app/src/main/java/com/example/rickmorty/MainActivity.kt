@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.rickmorty.components.screens.CharacterDetailsScreen
 import com.example.rickmorty.components.screens.CharacterEpisodeScreen
+import com.example.rickmorty.components.screens.CharactersScreen
 import com.example.rickmorty.network.KtorClient
 import com.example.rickmorty.ui.theme.RickMortyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,11 +35,22 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHost(navController = navController, startDestination = "character_details") {
-                        composable(route = "character_details") {
-                            CharacterDetailsScreen(
-                                characterId = 1
-                            ) {
+                    NavHost(navController = navController, startDestination = "characters") {
+                        composable(route = "characters") {
+                            CharactersScreen(
+                                onItemClick = { characterId ->
+                                    navController.navigate("character_details/$characterId")
+                                }
+                            )
+                        }
+                        composable(
+                            route = "character_details/{characterId}",
+                            arguments = listOf(navArgument("characterId") {
+                                type = NavType.IntType
+                            })
+                        ) {backStackEntry ->
+                            val characterId: Int = backStackEntry.arguments?.getInt("characterId") ?: -1
+                            CharacterDetailsScreen(characterId = characterId) {
                                 navController.navigate("character_episodes/$it")
                             }
                         }

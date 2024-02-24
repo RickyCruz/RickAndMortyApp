@@ -3,12 +3,17 @@ package com.example.rickmorty.repositories
 import com.example.rickmorty.network.ApiOperation
 import com.example.rickmorty.network.KtorClient
 import com.example.rickmorty.network.domain.Character
+import com.example.rickmorty.network.domain.Characters
 import com.example.rickmorty.network.domain.Episode
 import javax.inject.Inject
 
 class CharacterRepository @Inject constructor(
     private val ktorClient: KtorClient,
 ) {
+    suspend fun fetchCharacters(page: Int): ApiOperation<Characters> {
+        return ktorClient.getCharacters(page)
+    }
+
     suspend fun fetchCharacter(characterId: Int): ApiOperation<Character> {
         return ktorClient.getCharacter(characterId)
     }

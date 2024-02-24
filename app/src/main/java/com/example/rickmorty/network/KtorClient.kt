@@ -1,10 +1,13 @@
 package com.example.rickmorty.network
 
 import com.example.rickmorty.network.domain.Character
+import com.example.rickmorty.network.domain.Characters
 import com.example.rickmorty.network.domain.Episode
 import com.example.rickmorty.network.remote.RemoteCharacter
+import com.example.rickmorty.network.remote.RemoteCharacters
 import com.example.rickmorty.network.remote.RemoteEpisode
 import com.example.rickmorty.network.remote.toDomainCharacter
+import com.example.rickmorty.network.remote.toDomainCharacters
 import com.example.rickmorty.network.remote.toDomainEpisode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -34,6 +37,14 @@ class KtorClient {
             json(Json {
                 ignoreUnknownKeys = true
             })
+        }
+    }
+
+    suspend fun getCharacters(page: Int): ApiOperation<Characters> {
+        return safeApiCall {
+            client.get("character?page=$page")
+                .body<RemoteCharacters>()
+                .toDomainCharacters()
         }
     }
 
@@ -79,8 +90,8 @@ class KtorClient {
 }
 
 sealed interface ApiOperation<T> {
-    data class Success<T>(val data: T): ApiOperation<T>
-    data class Failure<T>(val exception: Exception): ApiOperation<T>
+    data class Success<T>(val data: T) : ApiOperation<T>
+    data class Failure<T>(val exception: Exception) : ApiOperation<T>
 
     fun <R> mapSuccess(transform: (T) -> R): ApiOperation<R> {
         return when (this) {
